@@ -1,0 +1,30 @@
+﻿@model PruebaW2UI.Models.DocumentType
+
+@{
+    ViewData["Title"] = "Tipo de Documento";
+}
+
+<link href="~/lib/w2ui/w2ui-1.5.min.css" rel="stylesheet" />
+
+<div class="row">
+    <div class="col-lg-12">
+        <div class="card">
+            <div class="card-header">
+                <span class="font-weight-bold mt-5">Tipos de Documentos</span>
+            </div>
+            <div class="card-body">
+                <div id="documentTypeGrid" style="width: 100%; height: 512px;"></div>
+                <br>
+                <label>
+                    <input type="checkbox" id="autoLoad" onclick="refreshGrid(this.checked)" checked>
+                    Auto Load
+                </label>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script src="~/lib/w2ui/w2ui-1.5.min.js"></script>
+<script src="~/js/views/documentType/index.js"></script>
+<script src="~/js/views/documentType/createOrEdit.js"></script>
