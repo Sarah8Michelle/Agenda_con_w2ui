@@ -1,10 +1,6 @@
 ﻿using PruebaW2UI.Models.Helpers;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace PruebaW2UI.Models
 {
@@ -21,14 +17,10 @@ namespace PruebaW2UI.Models
         public string Description { get; set; }
 
         [ForeignKey("PersonId")]
-        public virtual Person Person { get; set; }
+        public virtual Person People { get; set; }
 
         [ForeignKey("DocumentTypeId")]
-        public virtual DocumentType DocumentType { get; set; }
-
-        //public string Person_FullName { get { return Person.FirstName + " " + Person.LastName; } }
-
-        //public string DocumentType_Description { get { return DocumentType.Description; } }
+        public virtual DocumentType DocumentTypes { get; set; }
     }
 
     public class PersonSearch : W2uiSearch

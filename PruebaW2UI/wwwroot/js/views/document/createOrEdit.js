@@ -21,7 +21,7 @@
             ],
             actions: {
                 "Limpiar": function () { this.clear(); },
-                "Guardar": function () { this.save(); w2popup.close(); w2ui['grid'].reload(); }
+                "Guardar": function () { this.save(); w2popup.close(); }
             },
             onSubmit: function (formName, formObj) {
                 var record;
@@ -47,6 +47,7 @@
                         if (sel.length == 1) {
                             form.recid = sel[0];
                             form.record = $.extend(true, {}, grid.get(sel[0]));
+                            console.log(form.record);
                             form.refresh();
                         } else {
                             form.clear();
@@ -80,6 +81,7 @@
         onClose: function (event) {
             event.onComplete = function () {
                 w2ui['foo'].clear();
+                w2ui['grid'].reload();
             }
         }
     })

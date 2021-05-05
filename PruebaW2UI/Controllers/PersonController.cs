@@ -41,6 +41,7 @@ namespace PruebaW2UI.Controllers
 
                     people.FirstName = input.FirstName;
                     people.LastName = input.LastName;
+                    people.FullName = input.FullName;
                     people.DateOfBirth = input.DateOfBirth;
 
                     _context.Entry(people).State = EntityState.Modified;
@@ -55,6 +56,7 @@ namespace PruebaW2UI.Controllers
                     {
                         FirstName = input.FirstName,
                         LastName = input.LastName,
+                        FullName = input.FullName,
                         DateOfBirth = input.DateOfBirth
                     };
 
@@ -110,44 +112,6 @@ namespace PruebaW2UI.Controllers
             var output = new { status = "success", total = people.Count, records = people };
 
             return Json(output);
-        }
-
-        //[HttpGet]
-        //public JsonResult DropdownPerson()
-        //{
-        //    var personList = new List<Person>();
-
-        //    var data = _context.People.ToList();
-
-        //    foreach (var item in data)
-        //    {
-        //        var list = new Person
-        //        {
-        //            Id = item.Id,
-        //            FullName = item.FullName
-        //        };
-
-        //        personList.Add(list);
-        //    }
-
-        //    return Json(new { status = "success", records = personList });
-        //    //try
-        //    //{
-
-        //    //}
-
-        //    //catch (Exception e)
-        //    //{
-        //    //    return Json(new { status = "error", message = $"Ha ocurrido un error al realizar la operación. {e}" });
-        //    //}
-        //}
-
-        [HttpGet]
-        public JsonResult GetById(int id)
-        {
-            var result = _context.People.FirstOrDefault(f => f.Id == id);
-
-            return Json(result);
         }
     }
 }

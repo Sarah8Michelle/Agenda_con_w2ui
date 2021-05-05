@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace PruebaW2UI.Models
 {
@@ -21,6 +18,6 @@ namespace PruebaW2UI.Models
         [DataType(DataType.DateTime)]
         public DateTime DateOfBirth { get; set; }
 
-        public string FullName { get { return FirstName + " " + LastName; } set { FullName = value; } }
+        public string FullName { get; set; }
     }
 }

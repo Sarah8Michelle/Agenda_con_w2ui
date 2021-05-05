@@ -101,11 +101,14 @@ namespace PruebaW2UI.Controllers
         {
             var data = _context.Documents.FromSql("SELECT * FROM dbo.Documents");
 
-            List<Document> documents = new List<Document>();
+            List<Document> documents = new List<Document>();            
 
             foreach (var document in data)
             {
-                documents.Add(new Document { Id = document.Id, Description = document.Description, PersonId = document.PersonId, DocumentTypeId = document.DocumentTypeId });
+                var personName = _context.People.Find(document.PersonId);
+                var documentTypeDescription = _context.DocumentTypes.Find(document.DocumentTypeId);
+
+                documents.Add(new Document { Id = document.Id, Description = document.Description, PersonId = document.PersonId, DocumentTypeId = document.DocumentTypeId, People = new Person { FullName = personName.FullName }, DocumentTypes = new DocumentType { Description = documentTypeDescription.Description } });
             }
 
             var output = new { status = "success", total = documents.Count, records = documents };

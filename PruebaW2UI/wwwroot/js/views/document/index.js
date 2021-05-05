@@ -27,8 +27,8 @@
                         w2ui['detail'].clear();
                         w2ui['detail'].add([
                             { recid: 0, name: 'Descripción:', value: record.description },
-                            { recid: 1, name: 'Nombre de Persona:', value: record.personId },
-                            { recid: 2, name: 'Tipo de Documento:', value: record.documentTypeId },
+                            { recid: 1, name: 'Nombre de Persona:', value: record.people.fullName },
+                            { recid: 2, name: 'Tipo de Documento:', value: record.documentTypes.description },
                         ]);
 
                         detail();
@@ -42,15 +42,23 @@
             }
         },
         searches: [
-            { field: 'descrition', text: 'Descripción', type: 'text' },
+            { field: 'description', text: 'Descripción', type: 'text' },
             { field: 'personId', text: 'Persona', type: 'int' },
             { field: 'documentTypeId', text: 'Tipo de Documento', type: 'int' }
         ],
         sortData: [{ field: 'description', direction: 'DESC' }],
         columns: [
             { field: 'description', text: 'Descripción', sortable: true, resizable: true },
-            { field: 'personId', text: 'Persona', sortable: true, resizable: true },
-            { field: 'documentTypeId', text: 'Tipo de Documento', sortable: true, resizable: true },
+            {
+                field: 'personId', text: 'Persona', sortable: true, resizable: true, render: function (record) {
+                    return '<div>' + record.people.fullName + '</div>';
+                }
+            },
+            {
+                field: 'documentTypeId', text: 'Tipo de Documento', sortable: true, resizable: true, render: function (record) {
+                    return '<div>' + record.documentTypes.description + '</div>';
+                }
+            }
         ],
         onSelect: function (event) {
             var grid = this;

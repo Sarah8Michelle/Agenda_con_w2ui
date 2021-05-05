@@ -107,34 +107,5 @@ namespace PruebaW2UI.Controllers
 
             return Json(output);
         }
-
-        //[HttpGet]
-        //public JsonResult DropdownDocumentType()
-        //{
-        //    try
-        //    {
-        //        var documentTypeList = new List<DocumentType>();
-
-        //        var documentTypes = _context.DocumentTypes.ToList();
-
-        //        foreach (var item in documentTypes)
-        //        {
-        //            var list = new DocumentType
-        //            {
-        //                Id = item.Id,
-        //                Description = item.Description
-        //            };
-
-        //            documentTypeList.Add(list);
-        //        }
-
-        //        return Json(new { status = "success", records = documentTypeList });
-        //    }
-
-        //    catch (Exception e)
-        //    {
-        //        return Json(new { status = "error", message = $"Ha ocurrido un error al realizar la operación. {e}" });
-        //    }
-        //}
     }
 }

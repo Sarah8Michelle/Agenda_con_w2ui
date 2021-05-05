@@ -13,7 +13,7 @@
             ],
             actions: {
                 "Limpiar": function () { this.clear(); },
-                "Guardar": function () { this.save(); w2popup.close(); w2ui['grid'].reload(); }
+                "Guardar": function () { this.save(); w2popup.close(); }
             },
             onSubmit: function (formName, formObj) {
                 $.extend(formObj.postData, formObj.postData.record);
@@ -35,6 +35,10 @@
                         }
                     }
                 }
+            },
+            onChange: function () {
+                w2ui['foo'].record['fullName'] = w2ui.foo.record.firstName + ' ' + w2ui.foo.record.lastName;
+                console.log(w2ui.foo.record);
             }
         });
     }
@@ -62,6 +66,7 @@
         onClose: function (event) {
             event.onComplete = function () {
                 w2ui['foo'].clear();
+                w2ui['grid'].reload();
             }
         }
     })

@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PruebaW2UI.Data;
 
 namespace PruebaW2UI.Migrations
 {
     [DbContext(typeof(PruebaW2uiDbContext))]
-    partial class PruebaW2uiDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210505163117_Testing_Grid_Display")]
+    partial class Testing_Grid_Display
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
