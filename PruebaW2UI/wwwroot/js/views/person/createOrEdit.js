@@ -16,7 +16,17 @@
                 "Guardar": function () { this.save(); w2popup.close(); }
             },
             onSubmit: function (formName, formObj) {
-                $.extend(formObj.postData, formObj.postData.record);
+                var record;                
+
+                if (editMode) {
+                    record = { id: formObj.postData.record.id, firstName: formObj.postData.record.firstName, lastName: formObj.postData.record.lastName, dateOfBirth: formObj.postData.record.dateOfBirth, fullName: formObj.postData.record.firstName + ' ' + formObj.postData.record.lastName };
+                }
+
+                else {
+                    record = { firstName: formObj.postData.record.firstName, lastName: formObj.postData.record.lastName, dateOfBirth: formObj.postData.record.dateOfBirth, fullName: formObj.postData.record.firstName + ' ' + formObj.postData.record.lastName }
+                }
+                
+                $.extend(formObj.postData, record);
             },
             onRender: function (event) {
                 var grid = w2ui.grid;
@@ -29,16 +39,16 @@
                         if (sel.length == 1) {
                             form.recid = sel[0];
                             form.record = $.extend(true, {}, grid.get(sel[0]));
+
+                            var date = new Date(form.record.dateOfBirth);
+                            form.record.dateOfBirth = ((date.getMonth() > 8) ? (date.getMonth() + 1) : ('0' + (date.getMonth() + 1))) + '/' + ((date.getDate() > 9) ? date.getDate() : ('0' + date.getDate())) + '/' + date.getFullYear();
+
                             form.refresh();
                         } else {
                             form.clear();
                         }
                     }
                 }
-            },
-            onChange: function () {
-                w2ui['foo'].record['fullName'] = w2ui.foo.record.firstName + ' ' + w2ui.foo.record.lastName;
-                console.log(w2ui.foo.record);
             }
         });
     }

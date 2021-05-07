@@ -106,7 +106,7 @@ namespace PruebaW2UI.Controllers
 
             foreach (var person in data)
             {
-                people.Add(new Person { Id = person.Id, FirstName = person.FirstName, LastName = person.LastName, DateOfBirth = person.DateOfBirth });
+                people.Add(new Person { Id = person.Id, FirstName = person.FirstName, LastName = person.LastName, DateOfBirth = person.DateOfBirth, FullName = person.FullName });
             }
 
             var output = new { status = "success", total = people.Count, records = people };

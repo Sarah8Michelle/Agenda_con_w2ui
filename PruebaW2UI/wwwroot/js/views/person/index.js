@@ -41,15 +41,15 @@
             { field: 'lastName', text: 'Apellido', type: 'text' },
             { field: 'dateOfBirth', text: 'Fecha de Nacimiento', type: 'date' }
         ],
-        sortData: [{ field: 'firstName', direction: 'DESC' }],
+        sortData: [{ field: 'fullName', direction: 'DESC' }],
         columns: [
-            { field: 'firstName', text: 'Nombre', sortable: true, resizable: true },
-            { field: 'lastName', text: 'Apellido', sortable: true, resizable: true },
-            { field: 'dateOfBirth', text: 'Fecha de Nacimiento', sortable: true, resizable: true, render: 'date:mm/dd/yyyy' }
+            { field: 'fullName', text: 'Nombre', sortable: true, resizable: true },
+            { field: 'dateOfBirth', text: 'Fecha de Nacimiento', sortable: true, resizable: true, render: 'date:dd/mm/yyyy' }
         ],
         onSelect: function (event) {
             var grid = this;
             event.onComplete = function () {
+                var record = this.get(event.recid);
                 //check if a record is selected.
                 if (grid.get(grid.getSelection()[0]) !== null) {
                     w2ui['grid'].toolbar.enable('w2ui-details');
