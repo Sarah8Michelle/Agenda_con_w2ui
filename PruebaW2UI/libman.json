@@ -5,6 +5,10 @@
     {
       "library": "w2ui@1.5.3",
       "destination": "wwwroot/lib/w2ui/"
+    },
+    {
+      "library": "font-awesome@5.15.3",
+      "destination": "wwwroot/lib/font-awesome/"
     }
   ]
 }
