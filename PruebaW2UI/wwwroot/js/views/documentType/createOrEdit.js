@@ -11,7 +11,11 @@
             ],
             actions: {
                 "Limpiar": function () { this.clear(); },
-                "Guardar": function () { this.save(); w2popup.close(); w2ui['grid'].reload(); }
+                "Guardar": function () {
+                    this.save();
+                    if (w2ui.foo.validate().length == 0) {
+                        w2popup.close();
+                    }
             },
             onSubmit: function (formName, formObj) {
                 $.extend(formObj.postData, formObj.postData.record);

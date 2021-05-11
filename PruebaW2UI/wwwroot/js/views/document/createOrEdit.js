@@ -7,34 +7,26 @@
             },
             style: 'border: 0px; background-color: transparent;',
             fields: [
-                { field: 'description', type: 'text', required: true, html: { label: 'Descripción' } },
+                { field: 'description', type: 'text', required: true, html: { label: 'Descripción', attr: 'size="30"' } },
                 {
                     field: 'personId',
                     type: 'list',
-                    html: { label: 'Persona' }
+                    html: { label: 'Persona', attr: 'size="30"' }
                 },
                 {
                     field: 'documentTypeId',
                     type: 'list',
-                    html: { label: 'Tipo de Documento' }
+                    html: { label: 'Tipo de Documento', attr: 'size="30"' }
                 }
             ],
             actions: {
                 "Limpiar": function () { this.clear(); },
-                "Guardar": function () { this.save(); w2popup.close(); }
-            },
-            onSubmit: function (formName, formObj) {
-                var record;
-
-                if (editMode) {
-                    record = { id: formObj.postData.record.id, description: formObj.postData.record.description, personId: formObj.postData.record.personId, documentTypeId: formObj.postData.record.documentTypeId };
+                "Guardar": function () {
+                    this.save();
+                    if (w2ui.foo.validate().length == 0) {
+                        w2popup.close();
+                    }                    
                 }
-
-                else {
-                    record = { description: formObj.postData.record.description, personId: parseInt(formObj.postData.record.personId.id), documentTypeId: parseInt(formObj.postData.record.documentTypeId.id) }
-                }
-
-                $.extend(formObj.postData, record);
             },
             onRender: function (event) {
                 var grid = w2ui.grid;
@@ -47,17 +39,29 @@
                         if (sel.length == 1) {
                             form.recid = sel[0];
                             form.record = $.extend(true, {}, grid.get(sel[0]));
-                            console.log(form.record);
                             form.refresh();
                         } else {
                             form.clear();
                         }
                     }
                 }
-            }
+            },
+            onSubmit: function (formName, formObj) {
+                var record;
+
+                if (editMode) {
+                    record = { id: formObj.postData.record.id, description: formObj.postData.record.description, personId: formObj.postData.record.personId.id, documentTypeId: formObj.postData.record.documentTypeId.id };
+                }
+
+                else {
+                    record = { description: formObj.postData.record.description, personId: parseInt(formObj.postData.record.personId.id), documentTypeId: parseInt(formObj.postData.record.documentTypeId.id) }
+                }
+                
+                $.extend(formObj.postData, record);
+            }            
         });
     }
-
+    
     w2popup.open({
         title: (id == 0 ? 'Crear registro' : 'Editar registro'),
         with: 500,

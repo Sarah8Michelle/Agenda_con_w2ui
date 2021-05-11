@@ -35,7 +35,7 @@
                     }
                 }
 
-                if (target == 'w2ui-add' || target == 'w2ui-edit') {
+                if (target == 'w2ui-add') {
                     DropdownPerson();
                     DropdownDocumentType();
                 }
@@ -85,7 +85,13 @@
                 var editMode = true;
 
                 if (record != null) {
+                    DropdownPerson();
+                    DropdownDocumentType();
+
                     openPopup(record.id, editMode);
+
+                    $('#personId').w2field().set({ id: record.personId, text: record.people.fullName });
+                    $('#documentTypeId').w2field().set({ id: record.documentTypeId, text: record.documentTypes.description });
                 }
             }
         },
