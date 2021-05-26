@@ -35,7 +35,7 @@
             }
         },
         searches: [
-            { field: 'descrition', text: 'Descripción', type: 'text' }
+            { field: 'description', text: 'Descripción', type: 'text' }
         ],
         sortData: [{ field: 'description', direction: 'DESC' }],
         columns: [

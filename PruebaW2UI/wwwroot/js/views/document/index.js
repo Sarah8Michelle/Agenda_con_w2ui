@@ -35,7 +35,7 @@
                     }
                 }
 
-                if (target == 'w2ui-add') {
+                else if (target == 'w2ui-add') {
                     DropdownPerson();
                     DropdownDocumentType();
                 }
