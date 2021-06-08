@@ -16,6 +16,7 @@
                     if (w2ui.foo.validate().length == 0) {
                         w2popup.close();
                     }
+                }                
             },
             onSubmit: function (formName, formObj) {
                 $.extend(formObj.postData, formObj.postData.record);

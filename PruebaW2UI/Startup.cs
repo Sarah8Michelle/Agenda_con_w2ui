@@ -36,6 +36,8 @@ namespace PruebaW2UI
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
+            services.AddMvc().AddRazorOptions(options => options.AllowRecompilingViewsOnFileChange = true);
+
             services.AddDbContext<PruebaW2uiDbContext>(options =>
                 options.UseSqlServer(Configuration["ConnectionString:Development"]));
         }

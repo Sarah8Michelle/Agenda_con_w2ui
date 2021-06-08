@@ -118,7 +118,6 @@ function deleteRecord() {
 
     if (selection.length) {
         var selectedId = grid.get(selection[0]);
-        console.log(selectedId.id);
 
         if (selectedId.id > 0) {
             $.ajax({

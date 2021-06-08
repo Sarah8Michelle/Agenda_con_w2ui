@@ -18,9 +18,10 @@
                     if (w2ui.foo.validate().length == 0) {
                         w2popup.close();
                     }
+                }                
             },
             onSubmit: function (formName, formObj) {
-                var record;                
+                var record;
 
                 if (editMode) {
                     record = { id: formObj.postData.record.id, firstName: formObj.postData.record.firstName, lastName: formObj.postData.record.lastName, dateOfBirth: formObj.postData.record.dateOfBirth, fullName: formObj.postData.record.firstName + ' ' + formObj.postData.record.lastName };
@@ -29,17 +30,17 @@
                 else {
                     record = { firstName: formObj.postData.record.firstName, lastName: formObj.postData.record.lastName, dateOfBirth: formObj.postData.record.dateOfBirth, fullName: formObj.postData.record.firstName + ' ' + formObj.postData.record.lastName }
                 }
-                
+
                 $.extend(formObj.postData, record);
             },
             onRender: function (event) {
                 var grid = w2ui.grid;
                 var form = w2ui.foo;
-                
+
                 event.onComplete = function () {
                     if (editMode) {
                         var sel = grid.getSelection();
-                        
+
                         if (sel.length == 1) {
                             form.recid = sel[0];
                             form.record = $.extend(true, {}, grid.get(sel[0]));
