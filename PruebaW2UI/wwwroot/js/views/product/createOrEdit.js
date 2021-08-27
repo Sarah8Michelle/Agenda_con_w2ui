@@ -3,11 +3,44 @@
         $().w2form({
             name: 'foo',
             url: {
-                save: '/DocumentType/CreateOrEdit'
+                save: '/Product/CreateOrEdit'
             },
             style: 'border: 0px; background-color: transparent;',
             fields: [
-                { field: 'description', type: 'text', required: true, html: { label: 'Descripción' } }
+                { field: 'name', type: 'text', required: true, html: { label: 'Nombre del Producto' } },
+                {
+                    field: 'category', type: 'list', html: { label: 'Categoría' }, options: {
+                        items: ['Ropa', 'Accesorios', 'Calzados', 'Electrónicos', 'Electrodomésticos', 'Comida', 'Libros', 'Juguetes', 'Belleza']
+                    }
+                },
+                {
+                    field: 'unitPrice', type: 'float', html: { label: 'Precio por Unidad', attr: 'style="width: 60px"' },
+                    options: {
+                        arrows: true,
+                        format: true,
+                        precision: 2,
+                        min: 0,
+                        max: 200,
+                        step: 0.1
+                    }
+                },
+                {
+                    field: 'unitsInStock', type: 'int', html: { label: 'Unidades en Almacén', attr: 'style="width: 60px"' },
+                    options: {
+                        arrows: true,
+                        min: 0,
+                        max: 50
+                    }
+                },
+                {
+                    field: 'unitsInOrder', type: 'int', html: { label: 'Unidades en Pedidos', attr: 'style="width: 60px"' },
+                    options: {
+                        arrows: true,
+                        min: 0,
+                        max: 50
+                    }
+                },
+                { field: 'discontinued', type: 'checkbox', html: { label: '¿Descontinuado?' } },
             ],
             actions: {
                 "Limpiar": function () { this.clear(); },
@@ -16,10 +49,22 @@
                     if (w2ui.foo.validate().length == 0) {
                         w2popup.close();
                     }
-                }                
+                }
             },
             onSubmit: function (formName, formObj) {
-                $.extend(formObj.postData, formObj.postData.record);
+                var record;
+
+                if (editMode) {
+                    console.log(formObj.postData.record);
+                    //record = { id: formObj.postData.record.id, name: formObj.postData.record.name, category: formObj.postData.record.category.text, unitPrice: formObj.postData.record.unitPrice, unitsInStock: formObj.postData.record.unitsInStock, unitsInOrder: formObj.postData.record.unitsInOrder, discontinued: formObj.postData.record.discontinued };
+                }
+
+                else {
+                    console.log(formObj.postData.record);
+                    //record = { name: formObj.postData.record.name, category: formObj.postData.record.category.text, unitPrice: formObj.postData.record.unitPrice, unitsInStock: formObj.postData.record.unitsInStock, unitsInOrder: formObj.postData.record.unitsInOrder, discontinued: formObj.postData.record.discontinued }
+                }
+
+                //$.extend(formObj.postData, record);
             },
             onRender: function (event) {
                 var grid = w2ui.grid;
@@ -41,11 +86,11 @@
             }
         });
     }
-    
+
     w2popup.open({
         title: (editMode == false ? 'Crear registro' : 'Editar registro'),
-        with: 500,
-        height: 240,
+        with: 450,
+        height: 320,
         body: '<div id="form" style="width: 100%; height: 100%;"></div>',
         style: 'padding: 15px 0px 0px 0px',
         showMax: true,
@@ -65,6 +110,7 @@
         onClose: function (event) {
             event.onComplete = function () {
                 w2ui['foo'].clear();
+                w2ui['grid'].reload();
             }
         }
     })

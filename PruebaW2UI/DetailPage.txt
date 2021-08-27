@@ -1,0 +1,352 @@
+﻿Details
+
+var pstyle = 'border: 1px solid #efefef; padding: 5px;';
+
+var createOrUpdateTaxConfig = {
+    layout: {
+        name: 'createOrUpdateTaxLayout',
+        panels: [
+            { type: 'top', size: '50%', style: pstyle, minSize: 150, resizable: true },
+            { type: 'main', size: 240, style: pstyle, resizable: true }
+        ],
+
+    },
+    grid: {
+        name: 'createOrUpdateTaxGrid',
+        columns: [
+            { field: 'accountingAccountId', text: 'Cuenta', hidden: true },
+            { field: 'taxId', text: 'Impuesto', hidden: true },
+            { field: 'accountingAccountName', text: 'Cuenta Contable' },
+            { field: 'taxName', text: 'Nombre del Impuesto' },
+            { field: 'taxValue', text: 'Impuesto', size: '20%' }
+        ],
+        records: []
+    },
+    form: {
+        header: 'Información General',
+        name: 'createOrUpdateTaxForm',
+        fields: [
+            {
+                field: 'accountingAccountId', type: 'int', hidden: true
+            },
+            {
+                field: 'accountingAccountName', type: 'text', html: { label: 'Cuenta', span: 6, attr: 'style="width: calc(100% - 10px)" readonly' }
+            },
+            {
+                field: 'accountingAccountNumber', type: 'text', html: { label: 'Número', span: 6, attr: 'style="width: calc(100% - 10px)" readonly' }
+            },
+            {
+                field: 'taxId', type: 'list', required: true,
+                html: {
+                    label: 'Impuesto',
+                    span: 6,
+                    attr: 'style="width: calc(100% - 10px)"'
+                },
+                options: selectOptions.taxes
+            },
+        ],
+        actions: {
+            clear: {
+                text: "Limpiar",
+                onClick(event) {
+                    this.clear();
+                }
+            },
+            add: {
+                text: '<i class="fa fa-plus"></i> Agregar',
+                class: "w2ui-btn-green",
+                icon: "fa fa-plus",
+                onClick(event) {
+                    if (w2ui.createOrUpdateTaxForm.validate().length == 0) {
+                        addTaxesToGrid();
+                    }
+                }
+            }
+        }
+    },
+    init: function (record) {
+        w2ui.createOrUpdateTaxForm.record = {
+            accountingAccountId: record.id,
+            accountingAccountName: record.name,
+            accountingAccountNumber: record.number
+        }
+        w2ui.createOrUpdateTaxForm.refresh();
+    }
+}
+
+function openTaxModal(record) {
+    if (!w2ui.createOrUpdateTaxLayout) {
+        $().w2layout(createOrUpdateTaxConfig.layout);
+    }
+
+    if (!w2ui.createOrUpdateTaxGrid) {
+        $().w2grid(createOrUpdateTaxConfig.grid);
+    }
+
+    if (!w2ui.createOrUpdateTaxForm) {
+        $().w2form(createOrUpdateTaxConfig.form);
+    }
+
+    w2popup.open({
+        title: record.number + ' - ' + record.name,
+        width: 800,
+        height: 500,
+        showMax: true,
+        modal: true,
+        body: '<div id="main" style="position: absolute; left: 1px; top: 1px; right: 1px; bottom: 1px;"></div>',
+        buttons: '<button class="w2ui-btn" onclick="w2popup.close();">Cancelar</button>' +
+            '<button class="w2ui-btn w2ui-btn-blue" onclick="saveChanges()"><i class="fa fa-save"></i> Guardar</button>',
+        onOpen: function (event) {
+            event.onComplete = function () {
+                $('#w2ui-popup #main').w2render('createOrUpdateTaxLayout');
+                w2ui.createOrUpdateTaxLayout.html('main', w2ui.createOrUpdateTaxGrid);
+                w2ui.createOrUpdateTaxLayout.html('top', w2ui.createOrUpdateTaxForm);
+                createOrUpdateTaxConfig.init(record);
+            };
+        },
+        onClose: function (event) {
+            event.onComplete = function () {
+                //Clear popup grid.
+                w2ui.createOrUpdateTaxGrid.clear();
+            }
+        },
+        onToggle: function (event) {
+            event.onComplete = function () {
+                w2ui.createOrUpdateTaxLayout.resize();
+            }
+        }
+    });
+}
+
+function addTaxesToGrid() {
+    var tax = w2ui.createOrUpdateTaxForm.getValue('taxId');
+    var account = w2ui.createOrUpdateTaxForm.getValue('accountingAccountId');
+    var accountName = w2ui.createOrUpdateTaxForm.getValue('accountingAccountName');
+    var accountNumber = w2ui.createOrUpdateTaxForm.getValue('accountingAccountNumber');
+
+    if (w2ui.createOrUpdateTaxGrid.find({ taxId: tax.id }).length == 0) {
+        w2ui.createOrUpdateTaxGrid.add({ recid: w2ui.createOrUpdateTaxGrid.records.length + 1, accountingAccountId: account, taxId: tax.id, accountingAccountName: accountNumber + ' - ' + accountName, taxName: tax.text, taxValue: tax.taxValue, isActive: true, summary: true });
+    }
+    else {
+        w2alert('El impuesto ya ha sido agregado a esta cuenta.');
+    }
+}
+
+function saveChanges() {
+    if (w2ui.createOrUpdateTaxGrid.records.length > 0) {
+
+        $.ajax({
+            url: 'CreateOrUpdateTaxes',
+            type: 'POST',
+            data: JSON.stringify(w2ui.createOrUpdateTaxGrid.records),
+            contentType: "application/json",
+            success: function (result) {
+                console.log(result);
+                //Set notification.
+                toastr[result.alertType](result.detail, result.title);                
+                // re-load grid.
+                w2ui.grid.skip(0);
+                w2popup.close();
+            },
+            error: function (response) {
+                //desbloquear modal
+                w2popup.unlock();
+                toastr['error'](response.responseJSON.message, response.statusText);
+            }
+        });
+    }
+
+    else {
+        alert("here");
+    }
+}
+
+
+
+
+
+
+
+Normal createOrUpdate
+
+var createOrUpdateConfig = {
+    form: {
+        name: 'createOrUpdateAccountingAccountForm',
+        style: 'border: 0px; background-color: transparent;',
+        fields: [
+            {
+                field: 'number', type: 'text', required: true,
+                html: {
+                    group: 'Datos Generales',
+                    label: 'Número',
+                    span: 7,
+                    attr: 'placeholder="Número de la cuenta contable"; maxLength="20"; style="width: 250px"'
+                }
+            },
+            {
+                field: 'name', type: 'text', required: true,
+                html: {
+                    label: 'Nombre',
+                    span: 7,
+                    attr: 'placeholder="Nombre de la cuenta contable"; maxLength="128"; style="width: 250px"'
+                }
+            },
+            {
+                field: 'planningAccountId', type: 'list', required: true,
+                options: {
+                    url: '/AccountingAccounts/GetPlanningAccount/',
+                    minLength: 0,
+                    cacheMax: 150,
+                    msgNoItems: 'No se encontraron coincidencias.'                    
+                },
+                html: {
+                    label: 'Cuenta de Planificación',
+                    span: 7,
+                    attr: 'placeholder="Seleccione una cuenta de planificación..."; style="width: 250px"'
+                }
+            },
+            {
+                field: 'accountCategoryId', type: 'list', required: true,
+                options: {
+                    url: '/AccountingAccounts/GetAccountCategory/',
+                    minLength: 0,
+                    cacheMax: 150,
+                    msgNoItems: 'No se encontraron coincidencias.'                    
+                },
+                html: {
+                    label: 'Categoría de Cuenta',
+                    span: 7,
+                    attr: 'placeholder="Seleccione una categoría de cuenta..."; style="width: 250px"'
+                }
+            },
+            {
+                field: 'isUnique', type: 'checkbox',
+                html: {
+                    label: '¿Es único?'
+                }
+            },
+            {
+                field: 'isActive', type: 'checkbox',
+                html: {
+                    label: '¿Está activo?'
+                }
+            }
+        ],
+        actions: {
+            cancel: {
+                text: 'Cancelar',
+                class: 'w2ui-btn',
+                onClick() {
+                    w2popup.close();
+                }
+            },
+            clear: {
+                text: '<i class="fa fa-paint-brush" aria-hidden="true"></i> Limpiar',
+                class: 'w2ui-btn',
+                onClick() {
+                    this.clear();
+                }
+            },
+            save: {
+                text: '<i class="fa fa-save"></i> Guardar',
+                class: "w2ui-btn w2ui-btn-blue",
+                onClick() {
+                    if (w2ui.createOrUpdateAccountingAccountForm.validate().length == 0) {
+                        saveForm();
+                    }
+                }
+            }
+        }
+    },
+    init: function () {
+        if (!w2ui.createOrUpdateAccountingAccountForm) {
+            $().w2form(createOrUpdateConfig.form);
+        }
+    }
+}
+
+function openCreateOrUpdatePopup(record) {
+    w2popup.open({
+        title: (record == null ? 'Crear una cuenta contable' : 'Editar cuenta contable : ' + record.number + '-' + record.name.toUpperCase() + ''),
+        width: 600,
+        height: 400,
+        modal: true,
+        showMax: true,
+        style: 'padding: 15px 0px 0px 0px',
+        body: '<div id="main" style="width: 100%; height: 100%;"></div>',
+        onOpen: function (event) {
+            event.onComplete = function () {
+                $('#w2ui-popup #main').w2render('createOrUpdateAccountingAccountForm');
+                
+                if (record != null) {
+                    w2ui.createOrUpdateAccountingAccountForm.record = record;
+                    w2ui.createOrUpdateAccountingAccountForm.refresh();
+
+                    $('#planningAccountId').w2field().set({ id: record.planningAccountId, text: record.planningAccount_Name });
+                    $('#accountCategoryId').w2field().set({ id: record.accountCategoryId, text: record.accountCategory_Name });
+                }
+                else {
+                    w2ui.createOrUpdateAccountCategoryForm.clear();
+                }
+            }
+        },
+        onClose: function (event) {
+            event.onComplete = function () {
+                w2ui.createOrUpdateAccountingAccountForm.clear();
+            }
+        },
+        onToggle: function (event) {
+            //$(w2ui.createOrUpdateAccountingAccountForm.box).hide();
+            event.onComplete = function () {
+                //$(w2ui.createOrUpdateAccountingAccountForm.box).show();
+                w2ui.createOrUpdateAccountingAccountForm.resize();
+            }
+        }
+    });
+}
+
+function saveForm() {
+    if (w2ui.createOrUpdateAccountingAccountForm.validate().length == 0) {
+        var input = w2ui.createOrUpdateAccountingAccountForm.getCleanRecord();
+
+        let description = input.number + '-' + input.name;
+        
+        w2confirm({
+            title: '¿Desea continuar con el proceso?',
+            msg: (input.id == null ? '¿Está seguro/a que desea crear la cuenta contable ' + description.toUpperCase() + '?' : '¿Está seguro/a que desea editar la cuenta contable ' + description.toUpperCase() + '?'),
+            btn_yes: {
+                text: '<i class="fa fa-check-circle-o fa-lg" aria-hidden="true"></i> Confirmar',
+                class: 'w2ui-btn w2ui-btn-green',
+                style: '',
+                callBack: function () {
+                    w2popup.lock('Guardando...', true);
+
+                    $.ajax({
+                        url: '/AccountingAccounts/CreateOrUpdate',
+                        type: 'POST',
+                        data: JSON.stringify(input),
+                        contentType: 'application/json',
+                        success: function (result) {
+                            toastr[result.alertType](result.detail, result.title);
+                            w2ui.createOrUpdateAccountingAccountForm.clear();
+                            w2popup.close();
+                            w2ui.accountingAccountGrid.skip(0);
+                        },
+                        error: function (response) {
+                            w2popup.unlock();
+                            toastr['error'](response.responseJSON.message, response.statusText);
+                        }
+                    });
+                }
+            },
+            btn_no: { text: 'No', class: 'w2ui-btn' }
+        });
+    }
+
+    else {
+        w2alert('Favor de ingresar la información requerida en el formulario.').ok(function () { w2ui.createOrUpdateAccountingAccountForm.validate(); });
+    }
+}
+
+//form component initialization
+createOrUpdateConfig.init();

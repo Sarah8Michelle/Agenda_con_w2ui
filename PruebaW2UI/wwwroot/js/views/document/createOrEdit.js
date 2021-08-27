@@ -63,7 +63,7 @@
     }
     
     w2popup.open({
-        title: (id == 0 ? 'Crear registro' : 'Editar registro'),
+        title: (editMode == false ? 'Crear registro' : 'Editar registro'),
         with: 500,
         height: 240,
         body: '<div id="form" style="width: 100%; height: 100%;"></div>',

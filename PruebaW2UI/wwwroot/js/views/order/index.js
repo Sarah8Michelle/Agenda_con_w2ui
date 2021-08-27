@@ -1,7 +1,7 @@
 ﻿var config = {
     grid: {
         name: 'grid',
-        url: '/Document/GetAllRecords',
+        url: '/Order/GetAllRecords',
         method: 'GET',
         show: {
             header: true,  // indicates if header is visible
@@ -26,43 +26,50 @@
 
                         w2ui['detail'].clear();
                         w2ui['detail'].add([
-                            { recid: 0, name: 'Descripción:', value: record.description },
-                            { recid: 1, name: 'Nombre de Persona:', value: record.people.fullName },
-                            { recid: 2, name: 'Tipo de Documento:', value: record.documentTypes.description },
+                            { recid: 0, name: 'Código:', value: record.code },
+                            { recid: 1, name: 'Fecha de Orden:', value: record.orderDate },
+                            { recid: 2, name: 'Fecha de Entrega:', value: record.arrivalDate },
+                            { recid: 3, name: 'Compañía de Envíos:', value: record.shipCompany },
+                            { recid: 4, name: 'Dirección de Envío:', value: record.shipAddress },
+                            { recid: 5, name: 'Ciudad de Envío:', value: record.shipCity },
+                            { recid: 6, name: 'Región de Envío:', value: record.shipRegion },
+                            { recid: 7, name: 'País de Envío:', value: record.shipCountry },
+                            { recid: 8, name: 'Código Postal:', value: record.shipPostalCode },
+                            { recid: 9, name: 'Cliente:', value: record.person.fullName }
                         ]);
-                        console.log(record)
+
                         detail();
                     }
                 }
 
                 else if (target == 'w2ui-add') {
                     DropdownPerson();
-                    DropdownDocumentType();
                 }
             }
         },
         searches: [
-            { field: 'description', text: 'Descripción', type: 'text' },
-            { field: 'personId', text: 'Persona', type: 'int' },
-            { field: 'documentTypeId', text: 'Tipo de Documento', type: 'int' }
+            { field: 'code', text: 'Código', type: 'text' },
+            { field: 'orderDate', text: 'Fecha de Orden', type: 'date' },
+            { field: 'arrivalDate', text: 'Fecha de Entrega', type: 'date' },
+            { field: 'shipCompany', text: 'Compañía de Envíos', type: 'date' }
         ],
-        sortData: [{ field: 'description', direction: 'DESC' }],
+        sortData: [{ field: 'code', direction: 'DESC' }],
         columns: [
-            { field: 'description', text: 'Descripción', sortable: true, resizable: true },
+            { field: 'code', text: 'Código', sortable: true, resizable: true },
+            { field: 'orderDate', text: 'Fecha de Orden', sortable: true, resizable: true, render: 'datetime:dd/mm/yyyy|h12' },
+            { field: 'arrivalDate', text: 'Fecha de Entrega', sortable: true, resizable: true, render: 'date:dd/mm/yyyy' },
+            { field: 'shipCompany', text: 'Compañía de Envíos', sortable: true, resizable: true },
             {
-                field: 'personId', text: 'Persona', sortable: true, resizable: true, render: function (record) {                    
-                    return '<div>' + record.people.fullName + '</div>';
+                field: 'personId', text: 'Cliente', sortable: true, resizable: true, render: function (record) {
+                    //console.log(record);
+                    return '<div>' + record.person.fullName + '</div>';
                 }
             },
-            {
-                field: 'documentTypeId', text: 'Tipo de Documento', sortable: true, resizable: true, render: function (record) {
-                    return '<div>' + record.documentTypes.description + '</div>';
-                }
-            }
         ],
         onSelect: function (event) {
             var grid = this;
             event.onComplete = function () {
+                var record = this.get(event.recid);
                 //check if a record is selected.
                 if (grid.get(grid.getSelection()[0]) !== null) {
                     w2ui['grid'].toolbar.enable('w2ui-details');
@@ -76,7 +83,7 @@
         },
         onAdd: function (event) {
             event.onComplete = function () {
-                openPopup(0, false);
+                openPopup(null);
             }
         },
         onEdit: function (event) {
@@ -86,12 +93,11 @@
 
                 if (record != null) {
                     DropdownPerson();
-                    DropdownDocumentType();
 
+                    console.log(JSON.stringify(record));
                     openPopup(record.id, editMode);
 
-                    $('#personId').w2field().set({ id: record.personId, text: record.people.fullName });
-                    $('#documentTypeId').w2field().set({ id: record.documentTypeId, text: record.documentTypes.description });
+                    $('#personId').w2field().set({ id: record.personId, text: record.person.fullName });
                 }
             }
         },
@@ -130,7 +136,7 @@ function refreshGrid(auto) {
 
 // init
 $(function () {
-    $('#documentGrid').w2grid(config.grid);
+    $('#orderGrid').w2grid(config.grid);
     $().w2grid(detailGrid.grid);
 });
 
@@ -147,7 +153,7 @@ function deleteRecord() {
         if (selectedId.id > 0) {
             $.ajax({
                 type: 'POST',
-                url: '/Document/Delete/' + selectedId.id,
+                url: '/Order/Delete/' + selectedId.id,
                 async: true
             }).done(function (e) {
                 w2ui.grid.remove(selectedId.id);

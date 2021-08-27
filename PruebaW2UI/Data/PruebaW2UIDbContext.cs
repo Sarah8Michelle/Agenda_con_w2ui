@@ -1,9 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using PruebaW2UI.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace PruebaW2UI.Data
 {
@@ -19,5 +15,11 @@ namespace PruebaW2UI.Data
         public virtual DbSet<DocumentType> DocumentTypes { get; set; }
 
         public virtual DbSet<Document> Documents { get; set; }
+
+        public virtual DbSet<Product> Products { get; set; }
+
+        public virtual DbSet<Order> Orders { get; set; }
+
+        public virtual DbSet<OrderDetail> OrderDetails { get; set; }
     }
 }
