@@ -3,6 +3,7 @@
         name: 'grid',
         url: '/Order/GetAllRecords',
         method: 'GET',
+        recid: 'id',
         show: {
             header: true,  // indicates if header is visible
             toolbar: true,  // indicates if toolbar is visible
@@ -16,7 +17,8 @@
                 { type: 'button', id: 'w2ui-edit', text: 'Editar', icon: 'w2ui-icon-pencil', tooltip: 'Editar registro(s) seleccionado(s)' },
                 { type: 'button', id: 'w2ui-delete', text: 'Eliminar', icon: 'w2ui-icon-cross', tooltip: 'Eliminar registro(s) seleccionado(s)' },
                 { type: 'break' },
-                { type: 'button', id: 'w2ui-details', text: 'Detalles', icon: 'w2ui-icon-info', tooltip: 'Detalles del registro(s) seleccionado(s)', disabled: true }
+                { type: 'button', id: 'w2ui-details', text: 'Detalles', icon: 'w2ui-icon-info', tooltip: 'Detalles del registro(s) seleccionado(s)', disabled: true },
+                { type: 'button', id: 'w2ui-extended_details', text: 'Detalles de la Orden', icon: 'icon-page', tooltip: 'Detalles en relación al producto', disabled: true }
             ],
             onClick: function (target, data) {
                 if (target == 'w2ui-details') {
@@ -44,6 +46,17 @@
 
                 else if (target == 'w2ui-add') {
                     DropdownPerson();
+                }
+
+                else if (target == 'w2ui-extended_details') {
+                    data.onComplete = function () {
+                        var selections = w2ui.grid.getSelection();
+                        var record = w2ui.grid.get(selections[0]);
+
+                        if (record != null) {
+                            openOrderDetailsModal(record);
+                        }
+                    }
                 }
             }
         },
@@ -73,12 +86,14 @@
                 //check if a record is selected.
                 if (grid.get(grid.getSelection()[0]) !== null) {
                     w2ui['grid'].toolbar.enable('w2ui-details');
+                    w2ui['grid'].toolbar.enable('w2ui-extended_details');
                 }
             }
         },
         onUnselect: function (event) {
             event.onComplete = function () {
                 w2ui['grid'].toolbar.disable('w2ui-details');
+                w2ui['grid'].toolbar.disable('w2ui-extended_details');
             }
         },
         onAdd: function (event) {
@@ -94,7 +109,7 @@
                 if (record != null) {
                     DropdownPerson();
 
-                    console.log(JSON.stringify(record));
+                    //console.log(JSON.stringify(record));
                     openPopup(record.id, editMode);
 
                     $('#personId').w2field().set({ id: record.personId, text: record.person.fullName });

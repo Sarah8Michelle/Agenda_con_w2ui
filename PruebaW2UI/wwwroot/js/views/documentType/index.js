@@ -3,6 +3,7 @@
         name: 'grid',
         url: '/DocumentType/GetAllRecords',
         method: 'GET',
+        recid: 'id',
         show: {
             header: true,  // indicates if header is visible
             toolbar: true,  // indicates if toolbar is visible
