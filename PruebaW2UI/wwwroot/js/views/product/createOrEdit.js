@@ -1,4 +1,4 @@
-﻿function openPopup(id = 0, editMode = false) {
+﻿function openPopup(editMode = false) {
     if (!w2ui.foo) {
         $().w2form({
             name: 'foo',
@@ -11,6 +11,14 @@
                 {
                     field: 'category', type: 'list', html: { label: 'Categoría' }, options: {
                         items: ['Ropa', 'Accesorios', 'Calzados', 'Electrónicos', 'Electrodomésticos', 'Comida', 'Libros', 'Juguetes', 'Belleza']
+                    }
+                },
+                {
+                    field: 'quantityPerUnit', type: 'int', html: { label: 'Cantidad por Unidad', attr: 'style="width: 60px"' },
+                    options: {
+                        arrows: true,
+                        min: 0,
+                        max: 50
                     }
                 },
                 {
@@ -51,20 +59,18 @@
                     }
                 }
             },
-            onSubmit: function (formName, formObj) {
+            onSubmit: function (formObj) {
                 var record;
 
                 if (editMode) {
-                    console.log(formObj.postData.record);
-                    //record = { id: formObj.postData.record.id, name: formObj.postData.record.name, category: formObj.postData.record.category.text, unitPrice: formObj.postData.record.unitPrice, unitsInStock: formObj.postData.record.unitsInStock, unitsInOrder: formObj.postData.record.unitsInOrder, discontinued: formObj.postData.record.discontinued };
+                    record = { id: formObj.postData.record.id, name: formObj.postData.record.name, category: formObj.postData.record.category.text, quantityPerUnit: formObj.postData.record.quantityPerUnit, unitPrice: formObj.postData.record.unitPrice, unitsInStock: formObj.postData.record.unitsInStock, unitsInOrder: formObj.postData.record.unitsInOrder, discontinued: formObj.postData.record.discontinued };
                 }
 
                 else {
-                    console.log(formObj.postData.record);
-                    //record = { name: formObj.postData.record.name, category: formObj.postData.record.category.text, unitPrice: formObj.postData.record.unitPrice, unitsInStock: formObj.postData.record.unitsInStock, unitsInOrder: formObj.postData.record.unitsInOrder, discontinued: formObj.postData.record.discontinued }
+                    record = { name: formObj.postData.record.name, category: formObj.postData.record.category.text, quantityPerUnit: formObj.postData.record.quantityPerUnit, unitPrice: formObj.postData.record.unitPrice, unitsInStock: formObj.postData.record.unitsInStock, unitsInOrder: formObj.postData.record.unitsInOrder, discontinued: formObj.postData.record.discontinued }
                 }
 
-                //$.extend(formObj.postData, record);
+                $.extend(formObj.postData, record);
             },
             onRender: function (event) {
                 var grid = w2ui.grid;
@@ -89,8 +95,8 @@
 
     w2popup.open({
         title: (editMode == false ? 'Crear registro' : 'Editar registro'),
-        with: 450,
-        height: 320,
+        width: 450,
+        height: 360,
         body: '<div id="form" style="width: 100%; height: 100%;"></div>',
         style: 'padding: 15px 0px 0px 0px',
         showMax: true,

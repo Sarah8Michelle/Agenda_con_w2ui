@@ -10,33 +10,36 @@ var createDetailsConfig = {
     },
     grid: {
         name: 'createDetailsGrid',
+        url: { save:'/OrderDetail/CreateOrEdit'},
         columns: [
             { field: 'orderId', text: 'Orden', hidden: true },
             { field: 'productId', text: 'Producto', hidden: true },
             { field: 'orderCode', text: 'Código de Orden' },
             { field: 'productName', text: 'Nombre del Producto' },
             { field: 'quantity', text: 'Cantidad', size:'20%' },
-            { field: 'unitPrice', text: 'Precio por Unidad', size: '20%' }
+            { field: 'unitPrice', text: 'Precio por Unidad', size: '32%', render: 'money' }
         ],
-        records: [
-            {
-                w2ui: { summary: true },
-                orderCode: '', productName: '', quantity: '<span style="float: right;">Total:</span>', unitPrice: '<span style="float: right;">' + (w2ui.createDetailsForm.getValue('quantity') * w2ui.createDetailsForm.getValue('unitPrice')) +'</span>'
-            }
-        ]
+        records: []
     },
     form: {
         header: 'Información General',
         name: 'createDetailsForm',
         fields: [
             { field: 'orderId', type: 'int', hidden: true },
-            { field: 'orderCode', type: 'text', html: { label: 'Código de Orden', span: 6, attr: 'style="width: calc(100% - 10px)" readonly' } },
+            {
+                field: 'orderCode', type: 'text',
+                html: {
+                    label: 'Código de Orden',
+                    span: 7,
+                    attr: 'style="width: calc(100% - 10px)" readonly'
+                }
+            },
             {
                 field: 'productId', type: 'list', required: true,
                 html: {
                     label: 'Producto',
-                    span: 6,
-                    attr: 'placeholder="Seleccione una cuenta de planificación..."; style="width:calc(100% - 10px)"'
+                    span: 7,
+                    attr: 'placeholder="Seleccione un producto..."; style="width:calc(100% - 10px)"'
                 },
                 options: {
                     url: '/OrderDetail/DropdownProduct',
@@ -44,8 +47,22 @@ var createDetailsConfig = {
                     msgNoItems: 'No se encontraron coincidencias.'
                 }
             },
-            { field: 'quantity', type: 'int', required: true, html: { label: 'Cantidad del Producto', span: 6, attr: 'style="width: calc(100% - 10px)"' } },
-            { field: 'unitPrice', type: 'money', required: true, html: { label: 'Precio por Unidad', span: 6, attr: 'style="width: calc(100% - 10px)"' } }
+            {
+                field: 'quantity', type: 'int', required: true,
+                html: {
+                    label: 'Cantidad del Producto',
+                    span: 7,
+                    attr: 'style="width: calc(100% - 10px)"'
+                }
+            },
+            {
+                field: 'unitPrice', type: 'money', required: true,
+                html: {
+                    label: 'Precio por Unidad',
+                    span: 7,
+                    attr: 'style="width: calc(100% - 10px)"'
+                }
+            }
         ],
         actions: {
             clear: {
@@ -76,22 +93,22 @@ var createDetailsConfig = {
 
 function openOrderDetailsModal(record) {
     if (!w2ui.createDetailsLayout) {
-        $().w2layout(w2ui.createDetailsConfig.layout);
+        $().w2layout(createDetailsConfig.layout);
     }
 
     if (!w2ui.createDetailsGrid) {
-        $().w2grid(w2ui.createDetailsConfig.grid);
+        $().w2grid(createDetailsConfig.grid);
     }
 
     if (!w2ui.createDetailsForm) {
-        $().w2form(w2ui.createDetailsConfig.form);
+        $().w2form(createDetailsConfig.form);
     }
 
 
     w2popup.open({
         title: record.code,
-        width: 800,
-        height: 500,
+        width: 900,
+        height: 600,
         showMax: true,
         modal: true,
         body: '<div id="main" style="position: absolute; left: 1px; top: 1px; right: 1px; bottom: 1px;"></div>',
@@ -137,9 +154,10 @@ function addDetailsToGrid() {
 }
 
 function saveChanges() {
+    
     if (w2ui.createDetailsGrid.records.length > 0) {
         $.ajax({
-            url: '/OrderDetail/CreateOrEdit',
+            url: '/OrderDetail/Create',
             type: 'POST',
             data: JSON.stringify(w2ui.createDetailsGrid.records),
             contentType: 'application/json',

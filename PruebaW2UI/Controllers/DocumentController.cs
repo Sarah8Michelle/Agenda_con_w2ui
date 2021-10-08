@@ -38,7 +38,7 @@ namespace PruebaW2UI.Controllers
             {
                 if (input.Id != 0)
                 {
-                    var document = _context.Documents.FirstOrDefault(f => f.Id == input.Id); //.Include(i => i.DocumentType).Include(i => i.Person)
+                    var document = _context.Documents.FirstOrDefault(f => f.Id == input.Id);
 
                     document.Description = input.Description;
                     document.PersonId = input.PersonId;

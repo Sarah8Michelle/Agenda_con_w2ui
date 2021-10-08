@@ -132,6 +132,7 @@ namespace PruebaW2UI.Controllers
                     ShipRegion = order.ShipRegion,
                     ShipPostalCode = order.ShipPostalCode,
                     ShipCountry = order.ShipCountry,
+                    PersonId = order.PersonId,
                     Person = new Person { FullName = personName.FullName }
                 });
             }

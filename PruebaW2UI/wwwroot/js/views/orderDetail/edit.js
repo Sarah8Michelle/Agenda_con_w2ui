@@ -1,37 +1,52 @@
-﻿function openPopup(id = 0, editMode = false) {
+﻿function openPopup() {
     if (!w2ui.foo) {
         $().w2form({
             name: 'foo',
             url: {
-                save: '/Document/CreateOrEdit'
+                save: '/OrderDetail/Update'
             },
             style: 'border: 0px; background-color: transparent;',
             fields: [
-                { field: 'description', type: 'text', required: true, html: { label: 'Descripción', span: 7, attr: 'size="30"' } },
                 {
-                    field: 'personId', type: 'list', required: true,
+                    field: 'orderId', type: 'list', required: true,
                     html: {
-                        label: 'Persona',
+                        label: 'Orden',
                         span: 7,
-                        attr: 'placeholder="Seleccione una persona..."; style="width:calc(100% - 10px)"'
+                        attr: 'placeholder="Seleccione una orden..."; style="width:calc(100% - 10px)"'
                     },
                     options: {
-                        url: '/Document/DropdownPerson',
+                        url: '/OrderDetail/DropdownOrder',
                         minLength: 0,
                         msgNoItems: 'No se encontraron coincidencias.'
                     }
                 },
                 {
-                    field: 'documentTypeId', type: 'list', required: true,
+                    field: 'productId', type: 'list', required: true,
                     html: {
-                        label: 'Tipo de Documento',
+                        label: 'Producto',
                         span: 7,
-                        attr: 'placeholder="Seleccione un tipo de documento..."; style="width:calc(100% - 10px)"'
+                        attr: 'placeholder="Seleccione un producto..."; style="width:calc(100% - 10px)"'
                     },
                     options: {
-                        url: '/Document/DropdownDocumentType',
+                        url: '/OrderDetail/DropdownProduct',
                         minLength: 0,
                         msgNoItems: 'No se encontraron coincidencias.'
+                    }
+                },
+                {
+                    field: 'quantity', type: 'int', required: true,
+                    html: {
+                        label: 'Cantidad del Producto',
+                        span: 7,
+                        attr: 'style="width: calc(100% - 10px)"'
+                    }
+                },
+                {
+                    field: 'unitPrice', type: 'money', required: true,
+                    html: {
+                        label: 'Precio por Unidad',
+                        span: 7,
+                        attr: 'style="width: calc(100% - 10px)"'
                     }
                 }
             ],
@@ -50,39 +65,29 @@
                 var form = w2ui.foo;
 
                 event.onComplete = function () {
-                    if (editMode) {
-                        var sel = grid.getSelection();
-                        
-                        if (sel.length == 1) {
-                            form.recid = sel[0];
-                            form.record = $.extend(true, {}, grid.get(sel[0]));
-                            form.refresh();
-                        } else {
-                            form.clear();
-                        }
+                    var sel = grid.getSelection();
+                    if (sel.length == 1) {
+                        form.recid = sel[0];
+                        form.record = $.extend(true, {}, grid.get(sel[0]));
+                        form.refresh();
+                    } else {
+                        form.clear();
                     }
                 }
             },
             onSubmit: function (formObj) {
                 var record;
 
-                if (editMode) {
-                    record = { id: formObj.postData.record.id, description: formObj.postData.record.description, personId: formObj.postData.record.personId.id, documentTypeId: formObj.postData.record.documentTypeId.id };
-                }
-
-                else {
-                    record = { description: formObj.postData.record.description, personId: parseInt(formObj.postData.record.personId.id), documentTypeId: parseInt(formObj.postData.record.documentTypeId.id) }
-                }
-
+                record = { id: formObj.postData.record.id, orderId: formObj.postData.record.orderId.id, productId: formObj.postData.record.productId.id, quantity: formObj.postData.record.quantity, unitPrice: formObj.postData.record.unitPrice };
                 $.extend(formObj.postData, record);
             }
         });
     }
 
     w2popup.open({
-        title: (editMode == false ? 'Crear registro' : 'Editar registro'),
+        title: 'Editar registro',
         width: 500,
-        height: 240,
+        height: 290,
         body: '<div id="form" style="width: 100%; height: 100%;"></div>',
         style: 'padding: 15px 0px 0px 0px',
         showMax: true,

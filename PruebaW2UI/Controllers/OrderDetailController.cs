@@ -27,30 +27,11 @@ namespace PruebaW2UI.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateOrEdit(string request)
+        public async Task<IActionResult> Create([FromBody()] List<OrderDetail> inputList)
         {
-            dynamic response = JsonConvert.DeserializeObject(request);
-
-            OrderDetail input = response.ToObject<OrderDetail>();
-
             try
             {
-                if (input.Id != 0)
-                {
-                    var orderDetail = _context.OrderDetails.FirstOrDefault(f => f.Id == input.Id);
-
-                    orderDetail.UnitPrice = input.UnitPrice;
-                    orderDetail.Quantity = input.Quantity;
-                    orderDetail.ProductId = input.ProductId;
-                    orderDetail.OrderId = input.OrderId;
-
-                    _context.Entry(orderDetail).State = EntityState.Modified;
-                    await _context.SaveChangesAsync();
-
-                    return Json(new { status = "success" });
-                }
-
-                else
+                foreach (var input in inputList)
                 {
                     var orderDetail = new OrderDetail
                     {
@@ -65,6 +46,36 @@ namespace PruebaW2UI.Controllers
 
                     return Json(new { status = "success" });
                 }
+
+                return Json(new { status = "error", message = "Error al cargar los datos. Verifique que todos los campos hayan sido llenados correctamente." });
+            }
+
+            catch (Exception ex)
+            {
+                return Json(new { status = "error", message = $"La operación no ha podido realizarse debido a un error en el servidor. {ex}" });
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Update(string request)
+        {
+            dynamic response = JsonConvert.DeserializeObject(request);
+
+            OrderDetail input = response.ToObject<OrderDetail>();
+
+            try
+            {
+                var orderDetail = _context.OrderDetails.FirstOrDefault(f => f.Id == input.Id);
+
+                orderDetail.UnitPrice = input.UnitPrice;
+                orderDetail.Quantity = input.Quantity;
+                orderDetail.ProductId = input.ProductId;
+                orderDetail.OrderId = input.OrderId;
+
+                _context.Entry(orderDetail).State = EntityState.Modified;
+                await _context.SaveChangesAsync();
+
+                return Json(new { status = "success" });
             }
 
             catch (Exception ex)
@@ -114,6 +125,8 @@ namespace PruebaW2UI.Controllers
                     Id = orderDetail.Id,
                     UnitPrice = orderDetail.UnitPrice,
                     Quantity = orderDetail.Quantity,
+                    OrderId = orderDetail.OrderId,
+                    ProductId = orderDetail.ProductId,
                     Product = new Product { Name = productName.Name },
                     Order = new Order { Code = orderCode.Code }
                 });

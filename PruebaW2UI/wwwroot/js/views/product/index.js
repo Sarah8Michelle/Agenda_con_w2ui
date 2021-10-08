@@ -50,12 +50,12 @@
         columns: [
             { field: 'name', text: 'Nombre', sortable: true, resizable: true },
             { field: 'category', text: 'Categoría', sortable: true, resizable: true },
-            { field: 'quantityPerUnit', text: 'Cantidad por Unidad', sortable: true, resizable: true },
+            { field: 'quantityPerUnit', text: 'Cantidad por Unidad', sortable: true, resizable: true, style: 'text-align: center' },
             { field: 'unitPrice', text: 'Precio de Unidad', sortable: true, resizable: true, render: 'money' },
-            { field: 'unitsInStock', text: 'Unidades en Almacén', sortable: true, resizable: true },
-            { field: 'unitsInOrder', text: 'Unidades en Pedidos', sortable: true, resizable: true },
+            { field: 'unitsInStock', text: 'Unidades en Almacén', sortable: true, resizable: true, style: 'text-align: center' },
+            { field: 'unitsInOrder', text: 'Unidades en Pedidos', sortable: true, resizable: true, style: 'text-align: center' },
             {
-                field: 'discontinued', sortable: true, text: '¿Descontinuado?', resizable: true, style: 'text-align: center', size: '90px', render: function (record, index, column_index) {
+                field: 'discontinued', sortable: true, text: '¿Descontinuado?', resizable: true, style: 'text-align: center', size: '75%', render: function (record, index, column_index) {
                     var html = record.isActive ? '<i class="fas fa-check-circle fa-lg text-success aria-hidden="true"></i>' : '<i class="fas fa-times-circle fa-lg text-danger aria-hidden="true"></i>';
                     return html;
                 }
@@ -64,7 +64,6 @@
         onSelect: function (event) {
             var grid = this;
             event.onComplete = function () {
-                var record = this.get(event.recid);
                 //check if a record is selected.
                 if (grid.get(grid.getSelection()[0]) !== null) {
                     w2ui['grid'].toolbar.enable('w2ui-details');
@@ -87,14 +86,13 @@
                 var editMode = true;
 
                 if (record != null) {
-                    console.log(record, editMode);
                     openPopup(record.id, editMode);
 
                     $('#category').w2field().set({ id: record.category, text: record.category })
                 }
             }
         },
-        onDelete: function (target, data) {
+        onDelete: function (data) {
             data.preventDefault();
 
             $().w2popup({

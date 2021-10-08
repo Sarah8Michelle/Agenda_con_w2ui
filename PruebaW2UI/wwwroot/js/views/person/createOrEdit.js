@@ -60,7 +60,7 @@
 
     w2popup.open({
         title: (editMode == false ? 'Crear registro' : 'Editar registro'),
-        with: 500,
+        width: 500,
         height: 240,
         body: '<div id="form" style="width: 100%; height: 100%;"></div>',
         style: 'padding: 15px 0px 0px 0px',

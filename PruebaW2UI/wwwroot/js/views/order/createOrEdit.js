@@ -12,23 +12,28 @@ function openPopup(id = 0, editMode = false) {
                     html: {
                         group: 'Información General',
                         label: 'Código',
-                        span: 5,
+                        span: 7,
                         attr: 'size="30"'
                     }
                 },
                 {
-                    field: 'personId', type: 'list',
+                    field: 'personId', type: 'list', required: true,
                     html: {
-                        label: 'Cliente',
-                        span: 5,
-                        attr: 'size="30"'
+                        label: 'Persona',
+                        span: 7,
+                        attr: 'placeholder="Seleccione una persona..."; style="width:calc(100% - 10px)"'
+                    },
+                    options: {
+                        url: '/Order/DropdownPerson',
+                        minLength: 0,
+                        msgNoItems: 'No se encontraron coincidencias.'
                     }
                 },
                 {
                     field: 'orderDate', type: 'datetime',
                     html: {
                         label: 'Fecha de Orden',
-                        span: 5,
+                        span: 7,
                         attr: 'size="20"'
                     },
                     options: {
@@ -129,23 +134,21 @@ function openPopup(id = 0, editMode = false) {
                 var record;
 
                 if (editMode) {
-                    console.log(formObj.postData.record);
-                    //record = { id: formObj.postData.record.id, code: formObj.postData.record.code, orderDate: formObj.postData.record.orderDate, arrivalDate: formObj.postData.record.arrivalDate, shipCompany: formObj.postData.record.shipCompany, shipAddress: formObj.postData.record.shipAddress, shipCity: formObj.postData.record.shipCity, shipRegion: formObj.postData.record.shipRegion, shipCountry: formObj.postData.record.shipCountry, shipPostalCode: formObj.postData.record.shipPostalCode, personId: formObj.postData.record.personId.id };
+                    record = { id: formObj.postData.record.id, code: formObj.postData.record.code, orderDate: formObj.postData.record.orderDate, arrivalDate: formObj.postData.record.arrivalDate, shipCompany: formObj.postData.record.shipCompany, shipAddress: formObj.postData.record.shipAddress, shipCity: formObj.postData.record.shipCity, shipRegion: formObj.postData.record.shipRegion, shipCountry: formObj.postData.record.shipCountry, shipPostalCode: formObj.postData.record.shipPostalCode, personId: formObj.postData.record.personId.id };
                 }
 
                 else {
-                    console.log(formObj.postData.record);
-                    //record = { code: formObj.postData.record.code, orderDate: formObj.postData.record.orderDate, arrivalDate: formObj.postData.record.arrivalDate, shipCompany: formObj.postData.record.shipCompany, shipAddress: formObj.postData.record.shipAddress, shipCity: formObj.postData.record.shipCity, shipRegion: formObj.postData.record.shipRegion, shipCountry: formObj.postData.record.shipCountry, shipPostalCode: formObj.postData.record.shipPostalCode, personId: parseInt(formObj.postData.record.personId.id) }
+                    record = { code: formObj.postData.record.code, orderDate: formObj.postData.record.orderDate, arrivalDate: formObj.postData.record.arrivalDate, shipCompany: formObj.postData.record.shipCompany, shipAddress: formObj.postData.record.shipAddress, shipCity: formObj.postData.record.shipCity, shipRegion: formObj.postData.record.shipRegion, shipCountry: formObj.postData.record.shipCountry, shipPostalCode: formObj.postData.record.shipPostalCode, personId: parseInt(formObj.postData.record.personId.id) }
                 }
 
-                //$.extend(formObj.postData, record);
+                $.extend(formObj.postData, record);
             }
         });
     }
 
     w2popup.open({
         title: (editMode == false ? 'Crear registro' : 'Editar registro'),
-        with: 500,
+        width: 500,
         height: 560,
         body: '<div id="form" style="width: 100%; height: 100%;"></div>',
         style: 'padding: 15px 0px 0px 0px',
@@ -190,10 +193,4 @@ function detail() {
             }
         }
     });
-}
-
-function DropdownPerson() {
-    $('#personId')
-        .attr('placeholder', 'Seleccione un cliente...')
-        .w2field('list', { url: '/Order/DropdownPerson', minLength: 0 });
 }

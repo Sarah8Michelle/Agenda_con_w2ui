@@ -31,14 +31,9 @@
                             { recid: 1, name: 'Nombre de Persona:', value: record.people.fullName },
                             { recid: 2, name: 'Tipo de Documento:', value: record.documentTypes.description },
                         ]);
-                        console.log(record)
+                        
                         detail();
                     }
-                }
-
-                else if (target == 'w2ui-add') {
-                    DropdownPerson();
-                    DropdownDocumentType();
                 }
             }
         },
@@ -86,9 +81,6 @@
                 var editMode = true;
 
                 if (record != null) {
-                    DropdownPerson();
-                    DropdownDocumentType();
-
                     openPopup(record.id, editMode);
 
                     $('#personId').w2field().set({ id: record.personId, text: record.people.fullName });
@@ -96,7 +88,7 @@
                 }
             }
         },
-        onDelete: function (target, data) {
+        onDelete: function (data) {
             data.preventDefault();
 
             $().w2popup({
@@ -143,7 +135,6 @@ function deleteRecord() {
 
     if (selection.length) {
         var selectedId = grid.get(selection[0]);
-        console.log(selectedId.id);
 
         if (selectedId.id > 0) {
             $.ajax({
