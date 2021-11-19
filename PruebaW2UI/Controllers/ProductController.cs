@@ -36,37 +36,14 @@ namespace PruebaW2UI.Controllers
             {
                 if (input.Id != 0)
                 {
-                    var product = _context.Products.FirstOrDefault(f => f.Id == input.Id);
-
-                    product.Name = input.Name;
-                    product.Category = input.Category;
-                    product.QuantityPerUnit = input.QuantityPerUnit;
-                    product.UnitPrice = input.UnitPrice;
-                    product.UnitsInStock = input.UnitsInStock;
-                    product.UnitsInOrder = input.UnitsInOrder;
-                    product.Discontinued = input.Discontinued;
-
-                    _context.Entry(product).State = EntityState.Modified;
-                    await _context.SaveChangesAsync();
+                    await EditProduct(input);
 
                     return Json(new { status = "success" });
                 }
 
                 else
                 {
-                    var product = new Product
-                    {
-                        Name = input.Name,
-                        Category = input.Category,
-                        QuantityPerUnit = input.QuantityPerUnit,
-                        UnitPrice = input.UnitPrice,
-                        UnitsInStock = input.UnitsInStock,
-                        UnitsInOrder = input.UnitsInOrder,
-                        Discontinued = input.Discontinued
-                    };
-
-                    _context.Add(product);
-                    await _context.SaveChangesAsync();
+                    await CreateProduct(input);
 
                     return Json(new { status = "success" });
                 }
@@ -126,6 +103,39 @@ namespace PruebaW2UI.Controllers
             var output = new { status = "success", total = products.Count, records = products };
 
             return Json(output);
+        }
+
+        protected async Task CreateProduct(Product input)
+        {
+            var product = new Product
+            {
+                Name = input.Name,
+                Category = input.Category,
+                QuantityPerUnit = input.QuantityPerUnit,
+                UnitPrice = input.UnitPrice,
+                UnitsInStock = input.UnitsInStock,
+                UnitsInOrder = input.UnitsInOrder,
+                Discontinued = input.Discontinued
+            };
+
+            _context.Add(product);
+            await _context.SaveChangesAsync();
+        }
+
+        protected async Task EditProduct(Product input)
+        {
+            var product = _context.Products.FirstOrDefault(f => f.Id == input.Id);
+
+            product.Name = input.Name;
+            product.Category = input.Category;
+            product.QuantityPerUnit = input.QuantityPerUnit;
+            product.UnitPrice = input.UnitPrice;
+            product.UnitsInStock = input.UnitsInStock;
+            product.UnitsInOrder = input.UnitsInOrder;
+            product.Discontinued = input.Discontinued;
+
+            _context.Entry(product).State = EntityState.Modified;
+            await _context.SaveChangesAsync();
         }
     }
 }

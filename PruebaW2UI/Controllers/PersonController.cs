@@ -37,31 +37,14 @@ namespace PruebaW2UI.Controllers
             {                
                 if (input.Id != 0)
                 {
-                    var people = _context.People.FirstOrDefault(f => f.Id == input.Id);
-
-                    people.FirstName = input.FirstName;
-                    people.LastName = input.LastName;
-                    people.FullName = input.FullName;
-                    people.DateOfBirth = input.DateOfBirth;
-
-                    _context.Entry(people).State = EntityState.Modified;
-                    await _context.SaveChangesAsync();
+                    await EditPerson(input);
 
                     return Json(new { status = "success" });
                 }
 
                 else
                 {
-                    var person = new Person
-                    {
-                        FirstName = input.FirstName,
-                        LastName = input.LastName,
-                        FullName = input.FullName,
-                        DateOfBirth = input.DateOfBirth
-                    };
-
-                    _context.Add(person);
-                    await _context.SaveChangesAsync();
+                    await CreatePerson(input);
 
                     return Json(new { status = "success" });
                 }                
@@ -112,6 +95,33 @@ namespace PruebaW2UI.Controllers
             var output = new { status = "success", total = people.Count, records = people };
 
             return Json(output);
+        }
+
+        protected async Task CreatePerson(Person input)
+        {
+            var person = new Person
+            {
+                FirstName = input.FirstName,
+                LastName = input.LastName,
+                FullName = input.FullName,
+                DateOfBirth = input.DateOfBirth
+            };
+
+            _context.Add(person);
+            await _context.SaveChangesAsync();
+        }
+
+        protected async Task EditPerson(Person input)
+        {
+            var people = _context.People.FirstOrDefault(f => f.Id == input.Id);
+
+            people.FirstName = input.FirstName;
+            people.LastName = input.LastName;
+            people.FullName = input.FullName;
+            people.DateOfBirth = input.DateOfBirth;
+
+            _context.Entry(people).State = EntityState.Modified;
+            await _context.SaveChangesAsync();
         }
     }
 }

@@ -37,43 +37,14 @@ namespace PruebaW2UI.Controllers
             {
                 if (input.Id != 0)
                 {
-                    var order = _context.Orders.FirstOrDefault(f => f.Id == input.Id);
-
-                    order.Code = input.Code;
-                    order.OrderDate = input.OrderDate;
-                    order.ArrivalDate = input.ArrivalDate;
-                    order.ShipCompany = input.ShipCompany;
-                    order.ShipAddress = input.ShipAddress;
-                    order.ShipCity = input.ShipCity;
-                    order.ShipRegion = input.ShipRegion;
-                    order.ShipPostalCode = input.ShipPostalCode;
-                    order.ShipCountry = input.ShipCountry;
-                    order.PersonId = input.PersonId;
-
-                    _context.Entry(order).State = EntityState.Modified;
-                    await _context.SaveChangesAsync();
+                    await EditOrder(input);
 
                     return Json(new { status = "success" });
                 }
 
                 else
                 {
-                    var order = new Order
-                    {
-                        Code = input.Code,
-                        OrderDate = input.OrderDate,
-                        ArrivalDate = input.ArrivalDate,
-                        ShipCompany = input.ShipCompany,
-                        ShipAddress = input.ShipAddress,
-                        ShipCity = input.ShipCity,
-                        ShipRegion = input.ShipRegion,
-                        ShipPostalCode = input.ShipPostalCode,
-                        ShipCountry = input.ShipCountry,
-                        PersonId = input.PersonId
-                    };
-
-                    _context.Add(order);
-                    await _context.SaveChangesAsync();
+                    await CreateOrder(input);
 
                     return Json(new { status = "success" });
                 }
@@ -164,7 +135,7 @@ namespace PruebaW2UI.Controllers
             }
         }
 
-        public List<W2uiItem> GetPersonList(PersonSearch input)
+        protected List<W2uiItem> GetPersonList(PersonSearch input)
         {
             var list = new List<W2uiItem>();
 
@@ -174,6 +145,45 @@ namespace PruebaW2UI.Controllers
             }
 
             return list = _context.People.Select(s => new W2uiItem { Id = s.Id.ToString(), Text = s.FullName.ToString() }).Take(input.Max).ToList();
+        }
+
+        protected async Task CreateOrder(Order input)
+        {
+            var order = new Order
+            {
+                Code = input.Code,
+                OrderDate = input.OrderDate,
+                ArrivalDate = input.ArrivalDate,
+                ShipCompany = input.ShipCompany,
+                ShipAddress = input.ShipAddress,
+                ShipCity = input.ShipCity,
+                ShipRegion = input.ShipRegion,
+                ShipPostalCode = input.ShipPostalCode,
+                ShipCountry = input.ShipCountry,
+                PersonId = input.PersonId
+            };
+
+            _context.Add(order);
+            await _context.SaveChangesAsync();
+        }
+
+        protected async Task EditOrder(Order input)
+        {
+            var order = _context.Orders.FirstOrDefault(f => f.Id == input.Id);
+
+            order.Code = input.Code;
+            order.OrderDate = input.OrderDate;
+            order.ArrivalDate = input.ArrivalDate;
+            order.ShipCompany = input.ShipCompany;
+            order.ShipAddress = input.ShipAddress;
+            order.ShipCity = input.ShipCity;
+            order.ShipRegion = input.ShipRegion;
+            order.ShipPostalCode = input.ShipPostalCode;
+            order.ShipCountry = input.ShipCountry;
+            order.PersonId = input.PersonId;
+
+            _context.Entry(order).State = EntityState.Modified;
+            await _context.SaveChangesAsync();
         }
     }
 }

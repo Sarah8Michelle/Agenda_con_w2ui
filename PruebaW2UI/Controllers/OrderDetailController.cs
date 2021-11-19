@@ -181,7 +181,7 @@ namespace PruebaW2UI.Controllers
             }
         }
 
-        public List<W2uiItem> GetProductList(ProductSearch input)
+        protected List<W2uiItem> GetProductList(ProductSearch input)
         {
             var list = new List<W2uiItem>();
 
@@ -193,7 +193,7 @@ namespace PruebaW2UI.Controllers
             return list = _context.Products.Select(s => new W2uiItem { Id = s.Id.ToString(), Text = s.Name.ToString() }).Take(input.Max).ToList();
         }
 
-        public List<W2uiItem> GetOrderList(OrderSearch input)
+        protected List<W2uiItem> GetOrderList(OrderSearch input)
         {
             var list = new List<W2uiItem>();
 

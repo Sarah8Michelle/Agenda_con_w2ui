@@ -38,29 +38,14 @@ namespace PruebaW2UI.Controllers
             {
                 if (input.Id != 0)
                 {
-                    var document = _context.Documents.FirstOrDefault(f => f.Id == input.Id);
-
-                    document.Description = input.Description;
-                    document.PersonId = input.PersonId;
-                    document.DocumentTypeId = input.DocumentTypeId;
-
-                    _context.Entry(document).State = EntityState.Modified;
-                    await _context.SaveChangesAsync();
+                    await EditDocument(input);
 
                     return Json(new { status = "success" });
                 }
 
                 else
                 {
-                    var document = new Document
-                    {
-                        Description = input.Description,
-                        PersonId = input.PersonId,
-                        DocumentTypeId = input.DocumentTypeId
-                    };
-
-                    _context.Add(document);
-                    await _context.SaveChangesAsync();
+                    await CreateDocument(input);
 
                     return Json(new { status = "success" });
                 }
@@ -162,7 +147,7 @@ namespace PruebaW2UI.Controllers
             }
         }
 
-        public List<W2uiItem> GetPersonList (PersonSearch input)
+        protected List<W2uiItem> GetPersonList (PersonSearch input)
         {
             var list = new List<W2uiItem>();
 
@@ -174,7 +159,7 @@ namespace PruebaW2UI.Controllers
             return list = _context.People.Select(s => new W2uiItem { Id = s.Id.ToString(), Text = s.FullName.ToString() }).Take(input.Max).ToList();
         }
 
-        public List<W2uiItem> GetDocumentTypeList(DocumentTypeSearch input)
+        protected List<W2uiItem> GetDocumentTypeList(DocumentTypeSearch input)
         {
             var list = new List<W2uiItem>();
 
@@ -184,6 +169,31 @@ namespace PruebaW2UI.Controllers
             }
 
             return list = _context.DocumentTypes.Select(s => new W2uiItem { Id = s.Id.ToString(), Text = s.Description.ToString() }).Take(input.Max).ToList();
+        }
+
+        protected async Task CreateDocument(Document input)
+        {
+            var document = new Document
+            {
+                Description = input.Description,
+                PersonId = input.PersonId,
+                DocumentTypeId = input.DocumentTypeId
+            };
+
+            _context.Add(document);
+            await _context.SaveChangesAsync();
+        }
+
+        protected async Task EditDocument(Document input)
+        {
+            var document = _context.Documents.FirstOrDefault(f => f.Id == input.Id);
+
+            document.Description = input.Description;
+            document.PersonId = input.PersonId;
+            document.DocumentTypeId = input.DocumentTypeId;
+
+            _context.Entry(document).State = EntityState.Modified;
+            await _context.SaveChangesAsync();
         }
     }
 }

@@ -37,25 +37,14 @@ namespace PruebaW2UI.Controllers
             {
                 if (input.Id != 0)
                 {
-                    var documentType = _context.DocumentTypes.FirstOrDefault(f => f.Id == input.Id);
-
-                    documentType.Description = input.Description;
-
-                    _context.Entry(documentType).State = EntityState.Modified;
-                    await _context.SaveChangesAsync();
+                    await EditDocumentType(input);
 
                     return Json(new { status = "success" });
                 }
 
                 else
                 {
-                    var documentType = new DocumentType
-                    {
-                        Description = input.Description
-                    };
-
-                    _context.Add(documentType);
-                    await _context.SaveChangesAsync();
+                    await CreateDocumentType(input);
 
                     return Json(new { status = "success" });
                 }
@@ -106,6 +95,27 @@ namespace PruebaW2UI.Controllers
             var output = new { status = "success", total = documentTypes.Count, records = documentTypes };
 
             return Json(output);
+        }
+
+        protected async Task CreateDocumentType(DocumentType input)
+        {
+            var documentType = new DocumentType
+            {
+                Description = input.Description
+            };
+
+            _context.Add(documentType);
+            await _context.SaveChangesAsync();
+        }
+
+        protected async Task EditDocumentType(DocumentType input)
+        {
+            var documentType = _context.DocumentTypes.FirstOrDefault(f => f.Id == input.Id);
+
+            documentType.Description = input.Description;
+
+            _context.Entry(documentType).State = EntityState.Modified;
+            await _context.SaveChangesAsync();
         }
     }
 }
